@@ -1,0 +1,7 @@
+name: MyHome
+main: com.xuchaoji.myhome.MyHome
+version: 1.0
+commands: 
+    myhome: 
+        description: main command for MyHome
+        usage: myhome
