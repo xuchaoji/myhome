@@ -83,6 +83,7 @@ public class Commands implements CommandExecutor {
 				if(args.length==2) {
 					if(plugin.getConfig().contains(player.getName()+"."+args[1])) {
 						plugin.getConfig().set(player.getName()+"."+args[1], null);
+						plugin.saveConfig();
 						player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.GREEN+"已删除家："+ChatColor.AQUA+args[1]);
 					}else {
 						player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"删除出错：你没有名为"+ChatColor.AQUA+args[1]+ChatColor.RED+"的家。");
