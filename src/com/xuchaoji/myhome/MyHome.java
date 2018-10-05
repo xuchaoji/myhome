@@ -13,6 +13,7 @@ public class MyHome extends JavaPlugin {
 		cfg.addDefault("setlable", "set");
 		cfg.addDefault("golable", "go");
 		cfg.addDefault("deletelable", "delete");
+		cfg.addDefault("listlable", "list");
 		cfg.addDefault("homeLimit", 3);
 		cfg.options().copyDefaults(true);
 		saveConfig();
