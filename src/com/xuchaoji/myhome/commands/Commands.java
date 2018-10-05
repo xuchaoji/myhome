@@ -14,6 +14,7 @@ public class Commands implements CommandExecutor {
 	private Plugin plugin=MyHome.getPlugin(MyHome.class);
 	public String setlable = plugin.getConfig().getString("setlable");
 	public String golable = plugin.getConfig().getString("golable");
+	public String deletelable = plugin.getConfig().getString("deletelable");
 	
 
 	@Override
@@ -23,21 +24,28 @@ public class Commands implements CommandExecutor {
 			if(args.length==0) {
 				player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"请添加详细参数:\n"
 						+ ChatColor.RED+"myhome set home 设置名为home的家。\n"
-						+ ChatColor.RED+"myhome go home 传送到名为home的家。");
+						+ ChatColor.RED+"myhome go home 传送到名为home的家。\n"
+						+ChatColor.RED+ "myhome delete home 删除名为home的家。");
 			}else if (args[0].equalsIgnoreCase(setlable)) {
-				//设置家
-				if(args.length==2) {
-					Location location = player.getLocation();
-					plugin.getConfig().set(player.getName()+"."+args[1]+".Yaw", location.getYaw());
-					plugin.getConfig().set(player.getName()+"."+args[1]+".Pitch", location.getPitch());
-					plugin.getConfig().set(player.getName()+"."+args[1]+".X", location.getX());
-					plugin.getConfig().set(player.getName()+"."+args[1]+".Y", location.getY());
-					plugin.getConfig().set(player.getName()+"."+args[1]+".Z", location.getZ());
-					plugin.saveConfig();
-					player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.GREEN+"已设置家："+ChatColor.DARK_AQUA+args[1]);
-					return true;
+				//set home
+				int homeAmount = plugin.getConfig().getConfigurationSection(player.getName()).getKeys(true).size();
+				int homeLimit = plugin.getConfig().getInt("homeLimit");
+				if(homeAmount<homeLimit) {
+					if(args.length==2) {
+						Location location = player.getLocation();
+						plugin.getConfig().set(player.getName()+"."+args[1]+".Yaw", location.getYaw());
+						plugin.getConfig().set(player.getName()+"."+args[1]+".Pitch", location.getPitch());
+						plugin.getConfig().set(player.getName()+"."+args[1]+".X", location.getX());
+						plugin.getConfig().set(player.getName()+"."+args[1]+".Y", location.getY());
+						plugin.getConfig().set(player.getName()+"."+args[1]+".Z", location.getZ());
+						plugin.saveConfig();
+						player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.GREEN+"已设置家："+ChatColor.DARK_AQUA+args[1]);
+						return true;
+					}else {
+						player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"设置出错：请添加合法的家名称。");
+					}
 				}else {
-					player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"设置出错：请添加合法的家名称。");
+					player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"设置出错：家数量已超限，最多设置："+ChatColor.AQUA+homeLimit+ChatColor.RED+"个家。");
 				}
 			}else if(args[0].equalsIgnoreCase(golable)) {
 				if(args.length==2) {
@@ -56,7 +64,20 @@ public class Commands implements CommandExecutor {
 				}else {
 					player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"传送出错：请添加合法的家名称。");
 				}
+			}else if (args[0].equalsIgnoreCase(deletelable)) {
+				//delete home
+				if(args.length==2) {
+					if(plugin.getConfig().contains(player.getName()+"."+args[1])) {
+						plugin.getConfig().set(player.getName()+"."+args[1], null);
+						player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.GREEN+"已删除家："+ChatColor.AQUA+args[1]);
+					}else {
+						player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"删除出错：你没有名为"+ChatColor.AQUA+args[1]+ChatColor.RED+"的家。");
+					}
+				}else {
+					player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"删除出错：请添加合法的家名称。");
+				}
 			}else{
+				//other arguments except set go delete is invalid
 				player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"指令格式不对");
 			}
 		}else {

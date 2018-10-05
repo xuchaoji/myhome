@@ -12,6 +12,8 @@ public class MyHome extends JavaPlugin {
 	public void onEnable() {
 		cfg.addDefault("setlable", "set");
 		cfg.addDefault("golable", "go");
+		cfg.addDefault("deletelable", "delete");
+		cfg.addDefault("homeLimit", 3);
 		cfg.options().copyDefaults(true);
 		saveConfig();
 		this.getCommand("myhome").setExecutor(new Commands());
