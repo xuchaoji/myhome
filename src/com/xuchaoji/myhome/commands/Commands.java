@@ -3,6 +3,7 @@ package com.xuchaoji.myhome.commands;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -30,8 +31,7 @@ public class Commands implements CommandExecutor {
 						+ ChatColor.RED+"myhome set home 设置名为home的家。\n"
 						+ ChatColor.RED+"myhome go home 传送到名为home的家。\n"
 						+ ChatColor.RED+"myhome list 查看家列表。\n"
-						+ ChatColor.RED+ "myhome delete home 删除名为home的家。\n"
-						+ ChatColor.DARK_RED+ "注意:请确保设置家和回家在同一个世界，否则会传送到不同世界对应位置，可能出现的后果自负。");
+						+ ChatColor.RED+ "myhome delete home 删除名为home的家。");
 			}else if (args[0].equalsIgnoreCase(setlable)) {
 				//set home
 				int homeAmount;
@@ -44,6 +44,7 @@ public class Commands implements CommandExecutor {
 				if(homeAmount<homeLimit) {
 					if(args.length==2) {
 						Location location = player.getLocation();
+						plugin.getConfig().set(player.getName()+"."+args[1]+".World", location.getWorld().getName());
 						plugin.getConfig().set(player.getName()+"."+args[1]+".Yaw", location.getYaw());
 						plugin.getConfig().set(player.getName()+"."+args[1]+".Pitch", location.getPitch());
 						plugin.getConfig().set(player.getName()+"."+args[1]+".X", location.getX());
@@ -67,7 +68,7 @@ public class Commands implements CommandExecutor {
 						double z=plugin.getConfig().getDouble(player.getName()+"."+args[1]+".Z");
 						float yaw=(float)plugin.getConfig().getDouble(player.getName()+"."+args[1]+".Yaw");
 						float pitch=(float)plugin.getConfig().getDouble(player.getName()+"."+args[1]+".Pitch");
-						Location location=new Location(player.getWorld(), x, y, z, yaw, pitch);
+						Location location=new Location(Bukkit.getWorld(plugin.getConfig().getString(player.getName()+"."+args[1]+".World")), x, y, z, yaw, pitch);
 						player.teleport(location);
 						player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.GREEN+"已传送到家："+ChatColor.DARK_AQUA+args[1]);
 						return true;
