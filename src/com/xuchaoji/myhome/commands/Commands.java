@@ -1,14 +1,15 @@
 package com.xuchaoji.myhome.commands;
 
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -93,7 +94,7 @@ public class Commands implements CommandExecutor {
 					player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"删除出错：请添加合法的家名称。");
 				}
 			}else if (args[0].equalsIgnoreCase(listlable)) {
-				//homelist
+				//home list
 				if(!plugin.getConfig().contains(player.getName())) {
 					player.sendMessage(ChatColor.GOLD+"[MyHome]"+ChatColor.RED+"你还没设置过家。");
 				}else {
@@ -101,7 +102,16 @@ public class Commands implements CommandExecutor {
 					Iterator<String> iterator=homeSet.iterator();
 					player.sendMessage(ChatColor.GOLD+"[myhome]"+ChatColor.GREEN+"你已设置的家有：");
 					while (iterator.hasNext()) {
-						player.sendMessage(ChatColor.AQUA + iterator.next());
+						//添加世界显示
+						String homeName=iterator.next();
+						FileConfiguration cfg=plugin.getConfig();
+						String path = player.getName()+"."+homeName;
+						DecimalFormat df = new DecimalFormat("0.00");
+						String x = df.format(cfg.getDouble(path+".X"));
+						String y = df.format(cfg.getDouble(path+".Y"));
+						String z = df.format(cfg.getDouble(path+".Z"));
+						String homeListMessage = ChatColor.AQUA + homeName +": "+ ChatColor.GREEN+ cfg.getString(path+".World")+ChatColor.GOLD+" ("+x+", "+y+", "+z+")";
+						player.sendMessage(homeListMessage);
 					}
 				}
 			}else{
